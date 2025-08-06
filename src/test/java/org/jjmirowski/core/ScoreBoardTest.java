@@ -25,7 +25,7 @@ public class ScoreBoardTest {
 
         assertEquals(1, matches.size());
         Match match = matches.get(0);
-        assertEquals("Poland", match.getHomeTEam());
+        assertEquals("Poland", match.getHomeTeam());
         assertEquals("Italy", match.getAwayTeam());
     }
 

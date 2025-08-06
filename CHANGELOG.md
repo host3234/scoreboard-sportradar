@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.0
+### Added
+- startMatch() and getMatches()  in 'ScoreBoard' class
+- Implementation of Match class
 
 ## 0.2.0
 ### Added
