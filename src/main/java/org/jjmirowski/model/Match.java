@@ -1,6 +1,7 @@
 package org.jjmirowski.model;
 
 public class Match {
+
     private final String homeTeam;
     private final String awayTeam;
     private int homeScore;

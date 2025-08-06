@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.0
+### Changed
+- startMatch() and finishMatch() now perform additional validation and throw exceptions
+
 ## 0.4.0
 ### Added
 - updateScore() in 'Match' class
