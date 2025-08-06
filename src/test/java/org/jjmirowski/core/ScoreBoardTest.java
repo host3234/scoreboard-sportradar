@@ -29,4 +29,19 @@ public class ScoreBoardTest {
         assertEquals("Italy", match.getAwayTeam());
     }
 
+    @Test
+    void shouldFinishGame() {
+        //given
+        ScoreBoard board = new ScoreBoard();
+
+        //when
+        board.startMatch("Poland", "Italy");
+
+        //then
+        List<Match> matches = board.getMatches();
+        Match match = matches.get(0);
+        board.finishMatch(match);
+        assertTrue(matches.isEmpty());
+    }
+
 }

@@ -17,4 +17,8 @@ public class ScoreBoard {
     public List<Match> getMatches() {
         return Collections.unmodifiableList(matches);
     }
+
+    public void finishMatch(Match match) {
+        matches.remove(match);
+    }
 }

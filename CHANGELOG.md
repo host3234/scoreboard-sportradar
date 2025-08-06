@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.0
+### Added
+- updateScore() in 'Match' class
+- finishMatch() in 'ScoreBoard' class
+
 ## 0.3.0
 ### Added
 - startMatch() and getMatches()  in 'ScoreBoard' class
