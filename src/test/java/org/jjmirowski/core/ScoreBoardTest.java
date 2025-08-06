@@ -90,4 +90,66 @@ public class ScoreBoardTest {
         assertEquals("No active match found between Poland and Italy", exception.getMessage());
     }
 
+    @Test
+    void shouldReturnEmptyListWhenNoMatches() {
+        // given
+        ScoreBoard scoreBoard = new ScoreBoard();
+
+        // when
+        List<Match> matches = scoreBoard.getMatches();
+
+        // then
+        assertTrue(matches.isEmpty());
+    }
+
+    @Test
+    void shouldReturnSingleMatch() {
+        // given
+        ScoreBoard scoreBoard = new ScoreBoard();
+        scoreBoard.startMatch("Poland", "Italy");
+
+        // when
+        List<Match> matches = scoreBoard.getMatches();
+
+        // then
+        assertEquals(1, matches.size());
+        Match match = matches.get(0);
+        assertEquals("Poland", match.getHomeTeam());
+        assertEquals("Italy", match.getAwayTeam());
+    }
+
+    @Test
+    void shouldReturnAllMatchesSortedByTotalScoreDescending() {
+        // given
+        ScoreBoard scoreBoard = new ScoreBoard();
+        scoreBoard.startMatch("Poland", "Italy");
+        scoreBoard.startMatch("France", "Germany");
+        scoreBoard.getMatches().get(0).updateScore(1, 0); // goals from match 1 sum to 1
+        scoreBoard.getMatches().get(1).updateScore(3, 1); // goals from match 2 sum to 4
+
+        // when
+        List<Match> matches = scoreBoard.getMatches();
+
+        // then
+        assertEquals("France", matches.get(0).getHomeTeam()); //check that France's match with 4 goals was placed first
+        assertEquals("Poland", matches.get(1).getHomeTeam());
+    }
+
+    @Test
+    void shouldSortByMostRecentlyAddedWhenScoresEqual() {
+        // given
+        ScoreBoard scoreBoard = new ScoreBoard();
+        scoreBoard.startMatch("Poland", "Italy");
+        scoreBoard.startMatch("France", "Germany");
+        scoreBoard.getMatches().get(0).updateScore(1, 1);
+        scoreBoard.getMatches().get(1).updateScore(1, 1);
+
+        // when
+        List<Match> matches = scoreBoard.getMatches();
+
+        // then
+        assertEquals("France", matches.get(0).getHomeTeam()); //check that recently added match is placed first
+        assertEquals("Poland", matches.get(1).getHomeTeam());
+    }
+
 }
