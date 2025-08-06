@@ -4,9 +4,7 @@ import org.jjmirowski.exception.MatchNotFoundException;
 import org.jjmirowski.exception.TeamAlreadyPlayingException;
 import org.jjmirowski.model.Match;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class ScoreBoard {
 
@@ -20,7 +18,18 @@ public class ScoreBoard {
     }
 
     public List<Match> getMatches() {
-        return Collections.unmodifiableList(matches);
+        List<Match> result = new ArrayList<>(matches);
+        Collections.reverse(result);
+        result.sort(Comparator.comparingInt((Match m) -> m.getHomeScore() + m.getAwayScore())
+                .reversed());
+        return result;
+    }
+
+    public void updateScore(String homeTeam, String awayTeam, int homeScore, int awayScore) {
+        matches.stream()
+                .filter(m -> m.getHomeTeam().equals(homeTeam) && m.getAwayTeam().equals(awayTeam))
+                .findFirst()
+                .ifPresent(m -> m.updateScore(homeScore, awayScore));
     }
 
     public void finishMatch(String homeTeam, String awayTeam) {

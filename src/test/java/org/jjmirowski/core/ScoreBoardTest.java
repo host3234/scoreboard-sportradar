@@ -124,8 +124,9 @@ public class ScoreBoardTest {
         ScoreBoard scoreBoard = new ScoreBoard();
         scoreBoard.startMatch("Poland", "Italy");
         scoreBoard.startMatch("France", "Germany");
-        scoreBoard.getMatches().get(0).updateScore(1, 0); // goals from match 1 sum to 1
-        scoreBoard.getMatches().get(1).updateScore(3, 1); // goals from match 2 sum to 4
+        scoreBoard.updateScore("Poland", "Italy", 1, 0);  // total 1 goal
+        scoreBoard.updateScore("France", "Germany", 3, 1); // total 4 goals
+
 
         // when
         List<Match> matches = scoreBoard.getMatches();
@@ -141,8 +142,8 @@ public class ScoreBoardTest {
         ScoreBoard scoreBoard = new ScoreBoard();
         scoreBoard.startMatch("Poland", "Italy");
         scoreBoard.startMatch("France", "Germany");
-        scoreBoard.getMatches().get(0).updateScore(1, 1);
-        scoreBoard.getMatches().get(1).updateScore(1, 1);
+        scoreBoard.updateScore("Poland", "Italy", 1, 1);  // total 2 goal
+        scoreBoard.updateScore("France", "Germany", 2, 0); // total 2 goals
 
         // when
         List<Match> matches = scoreBoard.getMatches();

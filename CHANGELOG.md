@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.0
+### Added
+- getMatches() offers full functionality
+
 ## 0.5.0
 ### Changed
 - startMatch() and finishMatch() now perform additional validation and throw exceptions
