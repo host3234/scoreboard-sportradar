@@ -1,5 +1,14 @@
 # Changelog
 
+
+## 0.2.0
+### Added
+- ScoreBoard and Match classes
+
+## 0.1.1
+### Changed
+- JUnit version from 3 to 5
+
 ## 0.1.0
 ### Added
 - Project initial set-up
