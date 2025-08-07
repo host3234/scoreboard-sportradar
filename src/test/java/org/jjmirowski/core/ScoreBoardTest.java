@@ -2,7 +2,9 @@ package org.jjmirowski.core;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.jjmirowski.exception.EmptyNameException;
 import org.jjmirowski.exception.MatchNotFoundException;
+import org.jjmirowski.exception.SameTeamException;
 import org.jjmirowski.exception.TeamAlreadyPlayingException;
 import org.jjmirowski.model.Match;
 import org.junit.jupiter.api.Test;
@@ -13,6 +15,9 @@ import java.util.List;
  * Test class for {@link ScoreBoard}.
  */
 public class ScoreBoardTest {
+
+    private static final String TEAM_ALREADY_PLAYING_MSG = "One of the teams is already playing in an active match.";
+    private static final String EMPTY_NAME_MSG = "Team names must not be null or blank";
 
     @Test
     void shouldStartMatch() {
@@ -41,7 +46,7 @@ public class ScoreBoardTest {
             scoreBoard.startMatch("France", "Italy");
         });
 
-        assertEquals("One of the teams is already playing in an active match.", exception.getMessage());
+        assertEquals(TEAM_ALREADY_PLAYING_MSG, exception.getMessage());
     }
 
     @Test
@@ -56,7 +61,7 @@ public class ScoreBoardTest {
         });
 
         // then
-        assertEquals("One of the teams is already playing in an active match.", exception.getMessage());
+        assertEquals(TEAM_ALREADY_PLAYING_MSG, exception.getMessage());
     }
 
     @Test
@@ -151,6 +156,82 @@ public class ScoreBoardTest {
         // then
         assertEquals("France", matches.get(0).homeTeam()); //check that recently added match is placed first
         assertEquals("Poland", matches.get(1).homeTeam());
+    }
+
+    @Test
+    void shouldNotAllowMatchWithSameTeam() {
+        ScoreBoard board = new ScoreBoard();
+        Exception ex = assertThrows(SameTeamException.class, () -> {
+            board.startMatch("Poland", "Poland");
+        });
+        assertEquals("A match cannot be started between the same team: Poland", ex.getMessage());
+    }
+
+    @Test
+    void shouldThrownExceptionIfMatchToUpdateNotFound() {
+        ScoreBoard board = new ScoreBoard();
+        MatchNotFoundException ex = assertThrows(MatchNotFoundException.class, () -> {
+            board.updateScore("Poland", "Italy", 1, 1);
+        });
+        assertEquals("No active match found between Poland and Italy", ex.getMessage());
+    }
+
+    @Test
+    void shouldHandleMultipleMatchesStartAndFinishCorrectly() {
+        ScoreBoard board = new ScoreBoard();
+        board.startMatch("Poland", "Italy");
+        board.startMatch("France", "Germany");
+        board.startMatch("Brazil", "Argentina");
+
+        board.finishMatch("France", "Germany");
+        List<Match> matches = board.getMatches();
+
+        assertEquals(2, matches.size());
+        assertFalse(matches.stream().anyMatch(m -> m.homeTeam().equals("France")));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenHomeTeamNameIsNull() {
+        ScoreBoard board = new ScoreBoard();
+
+        EmptyNameException exception = assertThrows(EmptyNameException.class, () ->
+                board.startMatch(null, "Italy")
+        );
+
+        assertEquals(EMPTY_NAME_MSG, exception.getMessage());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenHomeTeamNameIsBlank() {
+        ScoreBoard board = new ScoreBoard();
+
+        EmptyNameException exception = assertThrows(EmptyNameException.class, () ->
+                board.startMatch("   ", "Italy")
+        );
+
+        assertEquals(EMPTY_NAME_MSG, exception.getMessage());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenAwayTeamNameIsNull() {
+        ScoreBoard board = new ScoreBoard();
+
+        EmptyNameException exception = assertThrows(EmptyNameException.class, () ->
+                board.startMatch("Poland", null)
+        );
+
+        assertEquals(EMPTY_NAME_MSG, exception.getMessage());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenAwayTeamNameIsBlank() {
+        ScoreBoard board = new ScoreBoard();
+
+        EmptyNameException exception = assertThrows(EmptyNameException.class, () ->
+                board.startMatch("Poland", "   ")
+        );
+
+        assertEquals(EMPTY_NAME_MSG, exception.getMessage());
     }
 
 }

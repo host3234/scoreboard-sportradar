@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.1.0]
+### Added
+- Validation against empty/null team names and two same teams in the same match
+
 ## [1.0.0]
 ### Added
 - JavaDocs for `ScoreBoard` class and `Match` record

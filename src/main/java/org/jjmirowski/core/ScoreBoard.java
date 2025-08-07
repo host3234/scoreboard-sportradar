@@ -1,6 +1,8 @@
 package org.jjmirowski.core;
 
+import org.jjmirowski.exception.EmptyNameException;
 import org.jjmirowski.exception.MatchNotFoundException;
+import org.jjmirowski.exception.SameTeamException;
 import org.jjmirowski.exception.TeamAlreadyPlayingException;
 import org.jjmirowski.model.Match;
 
@@ -26,9 +28,7 @@ public class ScoreBoard {
      * @throws TeamAlreadyPlayingException if either team is already participating in another match
      */
     public void startMatch(String homeTeam, String awayTeam) {
-        if (isTeamPlaying(homeTeam) || isTeamPlaying(awayTeam)) {
-            throw new TeamAlreadyPlayingException();
-        }
+        validate(homeTeam, awayTeam);
         matches.add(new Match(homeTeam, awayTeam));
     }
 
@@ -85,6 +85,18 @@ public class ScoreBoard {
                 .orElseThrow(() -> new MatchNotFoundException(homeTeam, awayTeam));
 
         matches.remove(match);
+    }
+
+    private void validate(String homeTeam, String awayTeam) {
+        if (homeTeam == null || awayTeam == null || homeTeam.isBlank() || awayTeam.isBlank()) {
+            throw new EmptyNameException();
+        }
+        if (homeTeam.equals(awayTeam)) {
+            throw new SameTeamException(homeTeam);
+        }
+        if (isTeamPlaying(homeTeam) || isTeamPlaying(awayTeam)) {
+            throw new TeamAlreadyPlayingException();
+        }
     }
 
     private boolean isTeamPlaying(String team) {
