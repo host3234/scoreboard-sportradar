@@ -27,8 +27,8 @@ public class ScoreBoardTest {
 
         assertEquals(1, matches.size());
         Match match = matches.get(0);
-        assertEquals("Poland", match.getHomeTeam());
-        assertEquals("Italy", match.getAwayTeam());
+        assertEquals("Poland", match.homeTeam());
+        assertEquals("Italy", match.awayTeam());
     }
 
     @Test
@@ -72,9 +72,9 @@ public class ScoreBoardTest {
         // then
         assertEquals(1, scoreBoard.getMatches().size());
         assertFalse(scoreBoard.getMatches().stream()
-                .anyMatch(m -> m.getHomeTeam().equals("Poland") && m.getAwayTeam().equals("Italy")));
+                .anyMatch(m -> m.homeTeam().equals("Poland") && m.awayTeam().equals("Italy")));
         assertTrue(scoreBoard.getMatches().stream()
-                .anyMatch(m -> m.getHomeTeam().equals("Germany") && m.getAwayTeam().equals("France")));
+                .anyMatch(m -> m.homeTeam().equals("Germany") && m.awayTeam().equals("France")));
     }
 
     @Test
@@ -114,8 +114,8 @@ public class ScoreBoardTest {
         // then
         assertEquals(1, matches.size());
         Match match = matches.get(0);
-        assertEquals("Poland", match.getHomeTeam());
-        assertEquals("Italy", match.getAwayTeam());
+        assertEquals("Poland", match.homeTeam());
+        assertEquals("Italy", match.awayTeam());
     }
 
     @Test
@@ -132,8 +132,8 @@ public class ScoreBoardTest {
         List<Match> matches = scoreBoard.getMatches();
 
         // then
-        assertEquals("France", matches.get(0).getHomeTeam()); //check that France's match with 4 goals was placed first
-        assertEquals("Poland", matches.get(1).getHomeTeam());
+        assertEquals("France", matches.get(0).homeTeam()); //check that France's match with 4 goals was placed first
+        assertEquals("Poland", matches.get(1).homeTeam());
     }
 
     @Test
@@ -149,8 +149,8 @@ public class ScoreBoardTest {
         List<Match> matches = scoreBoard.getMatches();
 
         // then
-        assertEquals("France", matches.get(0).getHomeTeam()); //check that recently added match is placed first
-        assertEquals("Poland", matches.get(1).getHomeTeam());
+        assertEquals("France", matches.get(0).homeTeam()); //check that recently added match is placed first
+        assertEquals("Poland", matches.get(1).homeTeam());
     }
 
 }

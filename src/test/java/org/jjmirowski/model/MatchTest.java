@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test class for {@link Match}.
+ */
 class MatchTest {
 
     private String homeTeam;
@@ -22,22 +25,28 @@ class MatchTest {
         Match match = new Match(homeTeam, awayTeam);
 
         //then
-        assertEquals(homeTeam, match.getHomeTeam());
-        assertEquals(awayTeam, match.getAwayTeam());
-        assertEquals(0, match.getHomeScore());
-        assertEquals(0, match.getAwayScore());
+        assertEquals(homeTeam, match.homeTeam());
+        assertEquals(awayTeam, match.awayTeam());
+        assertEquals(0, match.homeScore());
+        assertEquals(0, match.awayScore());
     }
 
     @Test
-    void shouldUpdateScore() {
+    void shouldReturnNewMatchWithUpdatedScore() {
         // given
         Match match = new Match(homeTeam, awayTeam);
 
-        // when
-        match.updateScore(4, 0);
 
-        match.updateScore(4, 0);
-        assertEquals(4, match.getHomeScore());
-        assertEquals(0, match.getAwayScore());
+        // when
+        Match updatedMatch = match.withUpdatedScore(2, 1);
+
+        //then
+        assertEquals(homeTeam, updatedMatch.homeTeam());
+        assertEquals(awayTeam, updatedMatch.awayTeam());
+        assertEquals(2, updatedMatch.homeScore());
+        assertEquals(1, updatedMatch.awayScore());
+
+        assertEquals(0, match.homeScore());
+        assertEquals(0, match.awayScore());
     }
 }

@@ -6,10 +6,25 @@ import org.jjmirowski.model.Match;
 
 import java.util.*;
 
+/**
+ * Handles live football matches: starting, updating scores, retrieving list of all active and finishing matches.
+ * Ensures no team plays more than one match at a time.
+ */
 public class ScoreBoard {
 
+    /**
+     * Internal list of currently ongoing matches.
+     * Matches are stored in insertion order and replaced immutably when scores are updated.
+     */
     private final List<Match> matches = new LinkedList<>();
 
+    /**
+     * Starts a new match between the specified home and away teams.
+     *
+     * @param homeTeam  name of the home team
+     * @param awayTeam  name of the away team
+     * @throws TeamAlreadyPlayingException if either team is already participating in another match
+     */
     public void startMatch(String homeTeam, String awayTeam) {
         if (isTeamPlaying(homeTeam) || isTeamPlaying(awayTeam)) {
             throw new TeamAlreadyPlayingException();
@@ -17,24 +32,55 @@ public class ScoreBoard {
         matches.add(new Match(homeTeam, awayTeam));
     }
 
+    /**
+     * Returns a list of all ongoing matches sorted by total score (descending),
+     * and then by recency (most recently added first).
+     *
+     * @return sorted list of ongoing matches
+     */
     public List<Match> getMatches() {
         List<Match> result = new ArrayList<>(matches);
+
+        // Reverse to prioritize most recent matches
         Collections.reverse(result);
-        result.sort(Comparator.comparingInt((Match m) -> m.getHomeScore() + m.getAwayScore())
+        // Sort by total score descending
+        result.sort(Comparator.comparingInt((Match m) -> m.homeScore() + m.awayScore())
                 .reversed());
+
         return result;
     }
 
+    /**
+     * Updates the score for a specific match identified by home and away team names.
+     *
+     * @param homeTeam   name of the home team
+     * @param awayTeam   name of the away team
+     * @param homeScore  new home team score
+     * @param awayScore  new away team score
+     * @throws MatchNotFoundException if no match is found with the specified teams
+     */
     public void updateScore(String homeTeam, String awayTeam, int homeScore, int awayScore) {
-        matches.stream()
-                .filter(m -> m.getHomeTeam().equals(homeTeam) && m.getAwayTeam().equals(awayTeam))
-                .findFirst()
-                .ifPresent(m -> m.updateScore(homeScore, awayScore));
+        ListIterator<Match> iterator = matches.listIterator();
+        while (iterator.hasNext()) {
+            Match match = iterator.next();
+            if (match.homeTeam().equals(homeTeam) && match.awayTeam().equals(awayTeam)) {
+                iterator.set(match.withUpdatedScore(homeScore, awayScore));
+                return;
+            }
+        }
+        throw new MatchNotFoundException(homeTeam, awayTeam);
     }
 
+    /**
+     * Finishes the match between the specified home and away teams, by removing it from matches list.
+     *
+     * @param homeTeam name of the home team
+     * @param awayTeam name of the away team
+     * @throws MatchNotFoundException if no such match is found
+     */
     public void finishMatch(String homeTeam, String awayTeam) {
         Match match = matches.stream()
-                .filter(m -> m.getHomeTeam().equals(homeTeam) && m.getAwayTeam().equals(awayTeam))
+                .filter(m -> m.homeTeam().equals(homeTeam) && m.awayTeam().equals(awayTeam))
                 .findFirst()
                 .orElseThrow(() -> new MatchNotFoundException(homeTeam, awayTeam));
 
@@ -44,6 +90,6 @@ public class ScoreBoard {
     private boolean isTeamPlaying(String team) {
         return matches
                 .stream()
-                .anyMatch(m -> m.getHomeTeam().equals(team) || m.getAwayTeam().equals(team));
+                .anyMatch(m -> m.homeTeam().equals(team) || m.awayTeam().equals(team));
     }
 }
