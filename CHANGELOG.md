@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.0]
+### Added
+- Validation against negative scores
+
 ## [1.1.0]
 ### Added
 - Validation against empty/null team names and two same teams in the same match

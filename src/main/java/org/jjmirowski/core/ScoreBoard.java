@@ -1,9 +1,6 @@
 package org.jjmirowski.core;
 
-import org.jjmirowski.exception.EmptyNameException;
-import org.jjmirowski.exception.MatchNotFoundException;
-import org.jjmirowski.exception.SameTeamException;
-import org.jjmirowski.exception.TeamAlreadyPlayingException;
+import org.jjmirowski.exception.*;
 import org.jjmirowski.model.Match;
 
 import java.util.*;
@@ -60,6 +57,9 @@ public class ScoreBoard {
      * @throws MatchNotFoundException if no match is found with the specified teams
      */
     public void updateScore(String homeTeam, String awayTeam, int homeScore, int awayScore) {
+        if (homeScore < 0 || awayScore < 0) {
+            throw new NegativeScoreException(homeScore, awayScore);
+        }
         ListIterator<Match> iterator = matches.listIterator();
         while (iterator.hasNext()) {
             Match match = iterator.next();

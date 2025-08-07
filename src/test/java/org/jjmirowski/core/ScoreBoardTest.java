@@ -2,10 +2,7 @@ package org.jjmirowski.core;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.jjmirowski.exception.EmptyNameException;
-import org.jjmirowski.exception.MatchNotFoundException;
-import org.jjmirowski.exception.SameTeamException;
-import org.jjmirowski.exception.TeamAlreadyPlayingException;
+import org.jjmirowski.exception.*;
 import org.jjmirowski.model.Match;
 import org.junit.jupiter.api.Test;
 
@@ -42,10 +39,9 @@ public class ScoreBoardTest {
 
         scoreBoard.startMatch("Poland", "Italy");
 
-        Exception exception = assertThrows(TeamAlreadyPlayingException.class, () -> {
-            scoreBoard.startMatch("France", "Italy");
-        });
-
+        Exception exception = assertThrows(TeamAlreadyPlayingException.class, () ->
+                scoreBoard.startMatch("France", "Italy")
+        );
         assertEquals(TEAM_ALREADY_PLAYING_MSG, exception.getMessage());
     }
 
@@ -56,10 +52,9 @@ public class ScoreBoardTest {
 
         // when
         scoreBoard.startMatch("Poland", "Italy");
-        Exception exception = assertThrows(TeamAlreadyPlayingException.class, () -> {
-            scoreBoard.startMatch("Poland", "Germany");
-        });
-
+        Exception exception = assertThrows(TeamAlreadyPlayingException.class, () ->
+                scoreBoard.startMatch("Poland", "Germany")
+        );
         // then
         assertEquals(TEAM_ALREADY_PLAYING_MSG, exception.getMessage());
     }
@@ -161,18 +156,18 @@ public class ScoreBoardTest {
     @Test
     void shouldNotAllowMatchWithSameTeam() {
         ScoreBoard board = new ScoreBoard();
-        Exception ex = assertThrows(SameTeamException.class, () -> {
-            board.startMatch("Poland", "Poland");
-        });
+        Exception ex = assertThrows(SameTeamException.class, () ->
+                board.startMatch("Poland", "Poland")
+        );
         assertEquals("A match cannot be started between the same team: Poland", ex.getMessage());
     }
 
     @Test
     void shouldThrownExceptionIfMatchToUpdateNotFound() {
         ScoreBoard board = new ScoreBoard();
-        MatchNotFoundException ex = assertThrows(MatchNotFoundException.class, () -> {
-            board.updateScore("Poland", "Italy", 1, 1);
-        });
+        MatchNotFoundException ex = assertThrows(MatchNotFoundException.class, () ->
+                board.updateScore("Poland", "Italy", 1, 1)
+        );
         assertEquals("No active match found between Poland and Italy", ex.getMessage());
     }
 
@@ -232,6 +227,18 @@ public class ScoreBoardTest {
         );
 
         assertEquals(EMPTY_NAME_MSG, exception.getMessage());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenScoreIsNegative() {
+        ScoreBoard board = new ScoreBoard();
+        board.startMatch("Poland", "Italy");
+
+        NegativeScoreException ex = assertThrows(NegativeScoreException.class, () ->
+            board.updateScore("Poland", "Italy", -1, 2)
+        );
+
+        assertEquals("Scores must not be negative. Provided: home= -1 : away= 2", ex.getMessage());
     }
 
 }
